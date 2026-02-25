@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+venv/
+.env
+
+# data and models (large files)
+data/raw/*.csv
+data/processed/*.csv
+data/*.duckdb
+models/*.pkl

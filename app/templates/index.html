@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Churn Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-2">Customer Churn Predictor</h1>
+        <p class="text-muted mb-4">Enter customer details to predict churn likelihood.</p>
+
+        {% if result %}
+        <div class="alert {{ 'alert-danger' if result.churn_prediction == 1 else 'alert-success' }} mb-4">
+            <h5 class="mb-1">
+                {% if result.churn_prediction == 1 %}
+                    Likely to Churn
+                {% else %}
+                    Likely to Stay
+                {% endif %}
+            </h5>
+            <p class="mb-0">Churn probability: <strong>{{ "%.1f"|format(result.churn_probability * 100) }}%</strong></p>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/predict">
+            <div class="row g-4">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Customer Info</h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-control" name="age"
+                                       value="{{ data.age if data else 35 }}" min="18" max="100" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option value="Male" {{ 'selected' if data and data.gender == 'Male' }}>Male</option>
+                                    <option value="Female" {{ 'selected' if data and data.gender == 'Female' }}>Female</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tenure (months)</label>
+                                <input type="number" class="form-control" name="tenure"
+                                       value="{{ data.tenure if data else 12 }}" min="0" max="72" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Monthly Charges ($)</label>
+                                <input type="number" step="0.01" class="form-control" name="monthly_charges"
+                                       value="{{ data.monthly_charges if data else 70 }}" min="0" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Total Charges ($)</label>
+                                <input type="number" step="0.01" class="form-control" name="total_charges"
+                                       value="{{ data.total_charges if data else 840 }}" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- right column -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Service Details</h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">Contract</label>
+                                <select class="form-select" name="contract">
+                                    <option value="Month-to-month" {{ 'selected' if data and data.contract == 'Month-to-month' }}>Month-to-month</option>
+                                    <option value="One year" {{ 'selected' if data and data.contract == 'One year' }}>One year</option>
+                                    <option value="Two year" {{ 'selected' if data and data.contract == 'Two year' }}>Two year</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" name="payment_method">
+                                    <option value="Electronic check" {{ 'selected' if data and data.payment_method == 'Electronic check' }}>Electronic check</option>
+                                    <option value="Mailed check" {{ 'selected' if data and data.payment_method == 'Mailed check' }}>Mailed check</option>
+                                    <option value="Bank transfer" {{ 'selected' if data and data.payment_method == 'Bank transfer' }}>Bank transfer</option>
+                                    <option value="Credit card" {{ 'selected' if data and data.payment_method == 'Credit card' }}>Credit card</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Internet Service</label>
+                                <select class="form-select" name="internet_service">
+                                    <option value="DSL" {{ 'selected' if data and data.internet_service == 'DSL' }}>DSL</option>
+                                    <option value="Fiber optic" {{ 'selected' if data and data.internet_service == 'Fiber optic' }}>Fiber optic</option>
+                                    <option value="None" {{ 'selected' if data and data.internet_service == 'None' }}>None</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Online Security</label>
+                                <select class="form-select" name="online_security">
+                                    <option value="Yes" {{ 'selected' if data and data.online_security == 'Yes' }}>Yes</option>
+                                    <option value="No" {{ 'selected' if data and data.online_security == 'No' }}>No</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tech Support</label>
+                                <select class="form-select" name="tech_support">
+                                    <option value="Yes" {{ 'selected' if data and data.tech_support == 'Yes' }}>Yes</option>
+                                    <option value="No" {{ 'selected' if data and data.tech_support == 'No' }}>No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg mt-4">Predict Churn</button>
+        </form>
+    </div>
+</body>
+</html>
